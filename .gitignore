@@ -1,0 +1,9 @@
+# Godot
+.godot/
+*.translation
+
+# Builds
+build/
+
+# System
+.DS_Store
