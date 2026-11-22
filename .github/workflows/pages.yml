@@ -24,6 +24,7 @@ jobs:
 
       - name: Install export templates
         run: |
+          apt-get update -qq && apt-get install -y -qq curl unzip >/dev/null
           mkdir -p ~/.local/share/godot/export_templates
           curl -sL -o /tmp/tpz https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_export_templates.tpz
           unzip -oq /tmp/tpz -d /tmp/tpl
