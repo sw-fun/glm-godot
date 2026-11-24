@@ -40,11 +40,13 @@ godot -e --path .       # or open it in the editor
 
 ## Build
 
-The whole game is one scene generated procedurally in GDScript: the
-terrain tiles, the river and bridge, the wall, gate and keep, the
-towers, creeps, projectiles, weather (falling snow, braziers with
-smoke, crows overhead) and the interface are built at run time from
-`main.gd`, `enemy.gd` and `tower.gd`. There are no art assets to load.
+The scene is built from Godot scenes: every piece (wall, gate, keep
+tower, brazier, tree, crow, tower, creep, projectile) is a `.tscn`
+under `scenes/`, the environment and layout live in `main.tscn`, and
+the scripts under `scripts/` hold only what stays code: the shared
+map data (`world.gd`), the game rules (waves, economy, projectiles in
+`main.gd`) and the few behaviors that move (`enemy.gd`, `tower.gd`,
+the pieces' placers). There are no art assets to load.
 
 To export the web build (needs the Godot 4.7 export templates, and the
 `Web` preset in `export_presets.cfg`, which ships with thread support
