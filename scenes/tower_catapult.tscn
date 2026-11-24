@@ -1,0 +1,41 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/tower.gd" id="1"]
+
+[sub_resource type="StandardMaterial3D" id="stone"]
+albedo_color = Color(0.6, 0.62, 0.66, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="wood"]
+albedo_color = Color(0.48, 0.37, 0.26, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="frame"]
+size = Vector3(1.6, 0.5, 1.6)
+
+[sub_resource type="BoxMesh" id="arm"]
+size = Vector3(0.18, 1.8, 0.18)
+
+[sub_resource type="SphereMesh" id="bowl"]
+radius = 0.22
+height = 0.44
+
+[node name="Tower" type="Node3D"]
+script = ExtResource("1")
+kind = "catapult"
+
+[node name="Frame" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.25, 0)
+mesh = SubResource("frame")
+material_override = SubResource("stone")
+
+[node name="Arm" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1, -0.2)
+rotation = Vector3(-0.6, 0, 0)
+mesh = SubResource("arm")
+material_override = SubResource("wood")
+
+[node name="Bowl" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.75, -0.6)
+mesh = SubResource("bowl")
+material_override = SubResource("wood")

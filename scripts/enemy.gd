@@ -4,12 +4,11 @@ extends Node3D
 signal died(enemy: Enemy)
 signal leaked(enemy: Enemy)
 
-const COLORS := {
-	"grunt": Color(0.42, 0.36, 0.31),
-	"runner": Color(0.54, 0.29, 0.23),
-	"brute": Color(0.33, 0.38, 0.32),
+const KINDS := {
+	"grunt": {"color": Color(0.42, 0.36, 0.31), "size": 1.0, "hp": 30.0, "speed": 2.2, "reward": 8},
+	"runner": {"color": Color(0.54, 0.29, 0.23), "size": 0.85, "hp": 18.0, "speed": 4.0, "reward": 10},
+	"brute": {"color": Color(0.33, 0.38, 0.32), "size": 1.5, "hp": 95.0, "speed": 1.5, "reward": 25},
 }
-const SIZES := {"grunt": 1.0, "runner": 0.85, "brute": 1.5}
 
 var kind := "grunt"
 var hp := 30.0
@@ -25,55 +24,45 @@ var slow_factor := 1.0
 var dead := false
 
 var _t := 0.0
-var _body: MeshInstance3D
-var _body_mat: StandardMaterial3D
-var _bar: MeshInstance3D
+@onready var _body: MeshInstance3D = $Body
+@onready var _head: MeshInstance3D = $Head
+@onready var _bar: MeshInstance3D = $Bar
+var _mat: StandardMaterial3D
 var _bar_mat: StandardMaterial3D
 
 
-func setup(p_kind: String, p_hp: float, p_speed: float, p_reward: int, p_path: PackedVector3Array) -> void:
+func setup(p_kind: String, scale_hp: float, p_path: PackedVector3Array) -> void:
 	kind = p_kind
-	max_hp = p_hp
-	hp = p_hp
-	speed = p_speed
-	reward = p_reward
+	var st: Dictionary = KINDS[kind]
+	max_hp = float(st["hp"]) * scale_hp
+	hp = max_hp
+	speed = float(st["speed"])
+	reward = int(st["reward"])
 	path = p_path
-	_build()
-	position = path[0]
 
 
-func _build() -> void:
-	var s: float = SIZES[kind]
-	_body_mat = StandardMaterial3D.new()
-	_body_mat.albedo_color = COLORS[kind]
-	_body_mat.roughness = 0.9
-
-	_body = MeshInstance3D.new()
-	var bm := BoxMesh.new()
-	bm.size = Vector3(0.55, 0.9, 0.4) * s
-	_body.mesh = bm
-	_body.material_override = _body_mat
-	_body.position.y = 0.45 * s
-	add_child(_body)
-
-	var head := MeshInstance3D.new()
-	var hm := SphereMesh.new()
-	hm.radius = 0.22 * s
-	hm.height = 0.44 * s
-	head.mesh = hm
-	head.material_override = _body_mat
-	head.position.y = 1.05 * s
-	add_child(head)
-
+func _ready() -> void:
+	var st: Dictionary = KINDS[kind]
+	var s: float = st["size"]
+	_mat = StandardMaterial3D.new()
+	_mat.albedo_color = st["color"]
+	_mat.roughness = 0.9
+	_body.material_override = _mat
+	_head.material_override = _mat
+	var base := _body.mesh.duplicate()
+	base.size = (base as BoxMesh).size * Vector3(s, s, s)
+	_body.mesh = base
+	_body.scale = Vector3.ONE * s
+	_head.scale = Vector3.ONE * s
 	_bar_mat = StandardMaterial3D.new()
 	_bar_mat.albedo_color = Color(0.3, 0.75, 0.3)
-	_bar = MeshInstance3D.new()
-	var b := BoxMesh.new()
-	b.size = Vector3(0.9 * s, 0.08, 0.02)
-	_bar.mesh = b
 	_bar.material_override = _bar_mat
+	_body.position.y = 0.45 * s
+	_head.position.y = 1.05 * s
 	_bar.position.y = 1.45 * s
-	add_child(_bar)
+	(_bar.mesh as BoxMesh).size.x *= s
+	if not path.is_empty():
+		position = path[0]
 
 
 func hit(dmg: float, now: float, slow_dur := 0.0, slow_f := 1.0) -> void:
@@ -83,11 +72,11 @@ func hit(dmg: float, now: float, slow_dur := 0.0, slow_f := 1.0) -> void:
 	if slow_dur > 0.0 and slow_f < 1.0:
 		slowed_until = now + slow_dur
 		slow_factor = slow_f
-	_body_mat.emission_enabled = true
-	_body_mat.emission = Color(0.6, 0.1, 0.05)
+	_mat.emission_enabled = true
+	_mat.emission = Color(0.6, 0.1, 0.05)
 	get_tree().create_timer(0.08).timeout.connect(func() -> void:
-		if is_instance_valid(_body_mat):
-			_body_mat.emission_enabled = false
+		if is_instance_valid(_mat):
+			_mat.emission_enabled = false
 	)
 	if hp <= 0.0:
 		dead = true
@@ -103,9 +92,9 @@ func _process(delta: float) -> void:
 	var eff := speed
 	if now < slowed_until:
 		eff *= slow_factor
-		_body_mat.albedo_color = Color(0.55, 0.7, 0.85)
+		_mat.albedo_color = Color(0.55, 0.7, 0.85)
 	else:
-		_body_mat.albedo_color = COLORS[kind]
+		_mat.albedo_color = KINDS[kind]["color"]
 
 	if seg >= path.size():
 		dead = true
@@ -128,7 +117,7 @@ func _process(delta: float) -> void:
 
 	_body.position.y += sin(_t * 9.0) * 0.05
 	var cam := get_viewport().get_camera_3d()
-	if cam and _bar:
+	if cam:
 		_bar.look_at(cam.global_position, Vector3.UP)
 	var frac: float = clampf(hp / max_hp, 0.0, 1.0)
 	_bar.scale = Vector3(frac, 1.0, 1.0)

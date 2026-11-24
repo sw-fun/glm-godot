@@ -1,0 +1,72 @@
+[gd_scene load_steps=7 format=3]
+
+[sub_resource type="StandardMaterial3D" id="iron"]
+albedo_color = Color(0.25, 0.24, 0.23, 1)
+roughness = 0.8
+
+[sub_resource type="BoxMesh" id="stand"]
+size = Vector3(0.4, 0.5, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="fire_mat"]
+albedo_color = Color(1, 0.55, 0.15, 1)
+emission_enabled = true
+emission = Color(1, 0.45, 0.1, 1)
+shading_mode = 0
+
+[sub_resource type="StandardMaterial3D" id="smoke_mat"]
+transparency = 1
+albedo_color = Color(0.6, 0.6, 0.6, 0.5)
+shading_mode = 0
+
+[sub_resource type="SphereMesh" id="fire_dot"]
+radius = 0.5
+height = 1
+material = SubResource("fire_mat")
+
+[sub_resource type="SphereMesh" id="smoke_dot"]
+radius = 0.5
+height = 1
+material = SubResource("smoke_mat")
+
+[node name="Brazier" type="Node3D"]
+
+[node name="Stand" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.25, 0)
+mesh = SubResource("stand")
+material_override = SubResource("iron")
+
+[node name="Fire" type="CPUParticles3D" parent="."]
+position = Vector3(0, 0.75, 0)
+amount = 14
+lifetime = 0.7
+emission_shape = 1
+emission_sphere_radius = 0.15
+direction = Vector3(0, 1, 0)
+spread = 12.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.6
+initial_velocity_max = 1.1
+scale_amount_min = 0.1
+scale_amount_max = 0.2
+mesh = SubResource("fire_dot")
+
+[node name="Smoke" type="CPUParticles3D" parent="."]
+position = Vector3(0, 1.2, 0)
+amount = 10
+lifetime = 3
+emission_shape = 1
+emission_sphere_radius = 0.1
+direction = Vector3(0.4, 1, 0.2)
+spread = 10.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.5
+initial_velocity_max = 0.8
+scale_amount_min = 0.15
+scale_amount_max = 0.35
+mesh = SubResource("smoke_dot")
+
+[node name="Lamp" type="OmniLight3D" parent="."]
+position = Vector3(0, 1.2, 0)
+light_color = Color(1, 0.6, 0.25, 1)
+light_energy = 1.4
+omni_range = 5.0

@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/crow.gd" id="1"]
+
+[sub_resource type="StandardMaterial3D" id="black"]
+albedo_color = Color(0.12, 0.12, 0.14, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="body"]
+size = Vector3(0.5, 0.08, 0.15)
+material = SubResource("black")
+
+[node name="Crow" type="MeshInstance3D"]
+script = ExtResource("1")
+mesh = SubResource("body")

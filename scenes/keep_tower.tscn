@@ -1,0 +1,50 @@
+[gd_scene load_steps=7 format=3]
+
+[sub_resource type="StandardMaterial3D" id="keep"]
+albedo_color = Color(0.53, 0.56, 0.61, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="roof"]
+albedo_color = Color(0.35, 0.25, 0.2, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="banner"]
+albedo_color = Color(0.6, 0.15, 0.12, 1)
+roughness = 0.8
+
+[sub_resource type="CylinderMesh" id="body"]
+top_radius = 1.3
+bottom_radius = 1.5
+height = 4.5
+
+[sub_resource type="CylinderMesh" id="roofcone"]
+top_radius = 0.0
+bottom_radius = 1.8
+height = 1.6
+
+[sub_resource type="PlaneMesh" id="cloth"]
+size = Vector2(0.5, 1.0)
+
+[node name="KeepTower" type="Node3D"]
+
+[node name="Body" type="MeshInstance3D" parent="."]
+position = Vector3(0, 4.5, 0)
+mesh = SubResource("body")
+material_override = SubResource("keep")
+
+[node name="Roof" type="MeshInstance3D" parent="."]
+position = Vector3(0, 7.5, 0)
+mesh = SubResource("roofcone")
+material_override = SubResource("roof")
+
+[node name="BannerL" type="MeshInstance3D" parent="."]
+position = Vector3(-1.4, 5.4, 0.3)
+rotation = Vector3(0, -0.610865, 0)
+mesh = SubResource("cloth")
+material_override = SubResource("banner")
+
+[node name="BannerR" type="MeshInstance3D" parent="."]
+position = Vector3(1.4, 5.4, 0.3)
+rotation = Vector3(0, 0.610865, 0)
+mesh = SubResource("cloth")
+material_override = SubResource("banner")

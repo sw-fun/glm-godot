@@ -1,6 +1,113 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=15 format=3]
 
-[ext_resource type="Script" path="res://main.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/main.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/terrain.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/castle.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/decor.gd" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/ui.tscn" id="5"]
+
+[sub_resource type="ProceduralSkyMaterial" id="sky_mat"]
+sky_top_color = Color(0.62, 0.71, 0.78, 1)
+sky_horizon_color = Color(0.78, 0.82, 0.85, 1)
+ground_bottom_color = Color(0.5, 0.53, 0.56, 1)
+ground_horizon_color = Color(0.78, 0.82, 0.85, 1)
+sun_angle_max = 8.0
+
+[sub_resource type="Sky" id="sky"]
+sky_material = SubResource("sky_mat")
+
+[sub_resource type="Environment" id="env"]
+background_mode = 2
+sky = SubResource("sky")
+ambient_light_source = 3
+ambient_light_energy = 1.1
+tonemap_mode = 3
+fog_enabled = true
+fog_light_color = Color(0.72, 0.76, 0.8, 1)
+fog_density = 0.008
+
+[sub_resource type="StandardMaterial3D" id="snowflake"]
+shading_mode = 0
+albedo_color = Color(1, 1, 1, 1)
+
+[sub_resource type="SphereMesh" id="flake_mesh"]
+radius = 0.5
+height = 1
+material = SubResource("snowflake")
+
+[sub_resource type="PlaneMesh" id="preview_mesh"]
+size = Vector2(1.8, 1.8)
+
+[sub_resource type="StandardMaterial3D" id="preview_mat"]
+transparency = 1
+albedo_color = Color(0.4, 0.9, 0.4, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="ring_mat"]
+transparency = 1
+albedo_color = Color(1, 1, 0.7, 0.5)
+emission_enabled = true
+emission = Color(1, 1, 0.6, 1)
+
+[sub_resource type="TorusMesh" id="ring_mesh"]
+inner_radius = 0.97
+outer_radius = 1
+material = SubResource("ring_mat")
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1")
+
+[node name="Camera" type="Camera3D" parent="."]
+projection = 1
+size = 30.0
+position = Vector3(22, 26, 24)
+rotation = Vector3(-0.71585, 0.74176, 0)
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+position = Vector3(0, 18, 0)
+rotation = Vector3(-0.66323, -2.44346, 0)
+light_color = Color(0.95, 0.93, 0.88, 1)
+light_energy = 1.1
+shadow_enabled = true
+
+[node name="WorldEnv" type="WorldEnvironment" parent="."]
+environment = SubResource("env")
+
+[node name="Snow" type="CPUParticles3D" parent="."]
+position = Vector3(0, 16, 0)
+amount = 500
+lifetime = 9
+emission_shape = 3
+emission_box_extents = Vector3(24, 0.5, 18)
+gravity = Vector3(0.3, -1.6, 0.1)
+initial_velocity_min = 0.4
+initial_velocity_max = 0.9
+scale_amount_min = 0.03
+scale_amount_max = 0.08
+mesh = SubResource("flake_mesh")
+
+[node name="Terrain" type="Node3D" parent="."]
+script = ExtResource("2")
+
+[node name="Castle" type="Node3D" parent="."]
+script = ExtResource("3")
+
+[node name="Decor" type="Node3D" parent="."]
+script = ExtResource("4")
+
+[node name="Enemies" type="Node3D" parent="."]
+
+[node name="Towers" type="Node3D" parent="."]
+
+[node name="Fx" type="Node3D" parent="."]
+
+[node name="Preview" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("preview_mesh")
+material_override = SubResource("preview_mat")
+
+[node name="RangeRing" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("ring_mesh")
+material_override = SubResource("ring_mat")
+
+[node name="UI" parent="." instance=ExtResource("5")]

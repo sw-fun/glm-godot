@@ -1,0 +1,61 @@
+[gd_scene load_steps=8 format=3]
+
+[sub_resource type="StandardMaterial3D" id="stone"]
+albedo_color = Color(0.6, 0.63, 0.67, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="roof"]
+albedo_color = Color(0.35, 0.25, 0.2, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="wood"]
+albedo_color = Color(0.37, 0.28, 0.2, 1)
+roughness = 0.9
+
+[sub_resource type="CylinderMesh" id="tower"]
+top_radius = 0.7
+bottom_radius = 0.8
+height = 2.6
+
+[sub_resource type="CylinderMesh" id="roofcone"]
+top_radius = 0.0
+bottom_radius = 1.0
+height = 1.0
+
+[sub_resource type="BoxMesh" id="door"]
+size = Vector3(0.3, 1.4, 1.4)
+
+[sub_resource type="BoxMesh" id="lintel"]
+size = Vector3(0.5, 1.2, 1.8)
+
+[node name="Gate" type="Node3D"]
+
+[node name="TowerL" type="MeshInstance3D" parent="."]
+position = Vector3(-1.4, 1.3, 0)
+mesh = SubResource("tower")
+material_override = SubResource("stone")
+
+[node name="TowerR" type="MeshInstance3D" parent="."]
+position = Vector3(1.4, 1.3, 0)
+mesh = SubResource("tower")
+material_override = SubResource("stone")
+
+[node name="RoofL" type="MeshInstance3D" parent="."]
+position = Vector3(-1.4, 3.1, 0)
+mesh = SubResource("roofcone")
+material_override = SubResource("roof")
+
+[node name="RoofR" type="MeshInstance3D" parent="."]
+position = Vector3(1.4, 3.1, 0)
+mesh = SubResource("roofcone")
+material_override = SubResource("roof")
+
+[node name="Lintel" type="MeshInstance3D" parent="."]
+position = Vector3(0, 2.2, 0)
+mesh = SubResource("lintel")
+material_override = SubResource("stone")
+
+[node name="Door" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.7, 0)
+mesh = SubResource("door")
+material_override = SubResource("wood")

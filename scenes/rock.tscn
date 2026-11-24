@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/rock.gd" id="1"]
+
+[sub_resource type="StandardMaterial3D" id="stone"]
+albedo_color = Color(0.3, 0.3, 0.3, 1)
+roughness = 0.9
+
+[sub_resource type="SphereMesh" id="ball"]
+radius = 0.22
+height = 0.44
+material = SubResource("stone")
+
+[node name="Rock" type="MeshInstance3D"]
+script = ExtResource("1")
+mesh = SubResource("ball")
